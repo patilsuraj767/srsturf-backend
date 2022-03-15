@@ -17,6 +17,8 @@ func SetupRoutes(e *echo.Echo) {
 	booking.GET("/:id", handler.GetBooking)
 	booking.GET("/", handler.GetBookings)
 	booking.POST("/", handler.CreateBooking)
+	booking.PUT("/:id", handler.EditBooking)
+	booking.GET("/date/:date", handler.GetBookingsByDate)
 
 	customer := v1.Group("/customers")
 	customer.GET("/:id", handler.GetCustomer)

@@ -66,3 +66,22 @@ func (b *Booking) CreateBooking() (*gorm.DB, error) {
 		return nil, errors.New("Booking already persent for given slot")
 	}
 }
+
+func (b *Booking) EditBooking() (*gorm.DB, error) {
+	var booking Booking
+	result := db.DBConn.Where(
+		"start_time < ? AND end_time > ?", b.StartTime, b.StartTime).Or(
+		"start_time < ? AND end_time > ?", b.EndTime, b.EndTime).Or(
+		"start_time > ? AND end_time < ?", b.StartTime, b.EndTime).Or(
+		"start_time > ? AND start_time < ?", b.StartTime, b.EndTime).First(&booking)
+	if result.Error == gorm.ErrRecordNotFound {
+		result := db.DBConn.Save(&b)
+		if result.Error == nil {
+			return result, nil
+		} else {
+			return nil, errors.New("SOMETHING WENT WRONG, UNABLE TO CREATE BOOKING")
+		}
+	} else {
+		return nil, errors.New("Booking already persent for given slot")
+	}
+}
